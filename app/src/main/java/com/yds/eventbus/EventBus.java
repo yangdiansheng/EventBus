@@ -2,7 +2,7 @@ package com.yds.eventbus;
 
 public class EventBus {
 
-    static volatile EventBus defaultInstance;
+    private static volatile EventBus defaultInstance;
     private static final EventBusBuilder DEFAULT_BUILDER = new EventBusBuilder();
 
     //双检测单例
@@ -14,7 +14,7 @@ public class EventBus {
 
     }
 
-    public EventBus getDefault(){
+    public static EventBus getDefault(){
         if (defaultInstance == null){
             synchronized (EventBus.class){
                 if (defaultInstance == null){
@@ -25,16 +25,11 @@ public class EventBus {
         return defaultInstance;
     }
 
-
-
-
-
-
-
-
-
-
     public void register(Object subscriber){
+
+    }
+
+    public void unregister(Object subscriber){
 
     }
 }
