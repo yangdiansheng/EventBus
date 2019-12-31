@@ -1,9 +1,12 @@
 package com.yds.eventbus;
 
+import java.util.List;
+
 public class EventBus {
 
     private static volatile EventBus defaultInstance;
     private static final EventBusBuilder DEFAULT_BUILDER = new EventBusBuilder();
+    private final SubscriberMethodFinder subscriberMethodFinder;
 
     //双检测单例
     public EventBus(){
@@ -11,6 +14,7 @@ public class EventBus {
     }
 
     EventBus(EventBusBuilder builder){
+        subscriberMethodFinder = new SubscriberMethodFinder();
 
     }
 
@@ -26,6 +30,8 @@ public class EventBus {
     }
 
     public void register(Object subscriber){
+        Class<?> subscriberClass = subscriber.getClass();
+        List<SubscriberMethod> subscribeMethods = subscriberMethodFinder.findSubscribeMethod(subscriberClass);
 
     }
 

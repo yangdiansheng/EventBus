@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-public @interface Surbscribe {
+public @interface Subscribe {
     //标记观察者调用方法
     //粘性事件
     //事件执行的线程
