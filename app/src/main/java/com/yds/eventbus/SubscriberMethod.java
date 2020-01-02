@@ -3,9 +3,11 @@ package com.yds.eventbus;
 import java.lang.reflect.Method;
 
 public class SubscriberMethod {
-
+    //观察者方法
     final Method method;
+    //观察者方法要运行的线程
     final ThreadMode threadMode;
+    //观察者方法参数
     final Class<?> eventType;
     final int priority;
     final boolean sticky;
