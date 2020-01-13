@@ -1,7 +1,7 @@
 package com.yds.eventbus.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
@@ -9,6 +9,8 @@ import com.yds.eventbus.EventBus;
 import com.yds.eventbus.R;
 import com.yds.eventbus.Subscribe;
 import com.yds.eventbus.ThreadMode;
+
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +30,18 @@ public class MainActivity extends AppCompatActivity {
                 EventBus.getDefault().post("come from main");
             }
         });
+        findViewById(R.id.post_in_thread).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Executors.newSingleThreadExecutor().submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        EventBus.getDefault().post("come from thread");
+                    }
+                });
+
+            }
+        });
     }
 
 
@@ -42,13 +56,15 @@ public class MainActivity extends AppCompatActivity {
         Log.d("yyy","handleMessage");
     }
 
-    @Subscribe(getTreadMode = ThreadMode.ASYNC)
-    public void handleMessage1(Object o){
-        Log.d("yyy","handleMessage1");
+    @Subscribe(getTreadMode = ThreadMode.MAIN)
+    public void handleMessage1(String o){
+        Log.d("yyy","handleMessage1" + o);
+        Log.d("yyy",Thread.currentThread().getName() + "");
     }
 
     @Subscribe(priority = 2)
     public void handleMessage2(String o){
         Log.d("yyy","handleMessage2" + o);
+        Log.d("yyy",Thread.currentThread().getName() + "");
     }
 }
