@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".activity.MainActivity">
 
     <Button
@@ -11,5 +12,11 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:text="register" />
+
+    <Button
+        android:id="@+id/post_in_main"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="主线程发送" />
 
 </LinearLayout>

@@ -22,6 +22,12 @@ public class MainActivity extends AppCompatActivity {
                 EventBus.getDefault().register(MainActivity.this);
             }
         });
+        findViewById(R.id.post_in_main).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post("come from main");
+            }
+        });
     }
 
 
@@ -42,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Subscribe(priority = 2)
-    public void handleMessage2(Object o){
-        Log.d("yyy","handleMessage2");
+    public void handleMessage2(String o){
+        Log.d("yyy","handleMessage2" + o);
     }
 }
