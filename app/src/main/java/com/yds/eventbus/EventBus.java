@@ -24,6 +24,7 @@ public class EventBus {
     private MainThreadSupport mainThreadSupport;
     private final Poster mainThreadPoster;
     private final BackgroundPoster backgroundPoster;
+    private final AsyncPoster asyncPoster;
     private final ExecutorService executorService;
 
     //双检测单例
@@ -39,6 +40,7 @@ public class EventBus {
         mainThreadPoster = mainThreadSupport != null ? mainThreadSupport.createPoster(this) : null;
         backgroundPoster = new BackgroundPoster(this);
         executorService = builder.executorService;
+        asyncPoster = new AsyncPoster(this);
     }
 
     ExecutorService getExecutorService(){
@@ -226,9 +228,9 @@ public class EventBus {
                     invokeSubscriber(subscription, event);
                 }
                 break;
-//            case ASYNC:
-//                asyncPoster.enqueue(subscription, event);
-//                break;
+            case ASYNC:
+                asyncPoster.enqueue(subscription, event);
+                break;
 //            default:
 //                throw new IllegalStateException("Unknown thread mode: " + subscription.subscriberMethod.threadMode);
         }
