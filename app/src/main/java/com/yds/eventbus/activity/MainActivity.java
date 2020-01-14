@@ -42,6 +42,13 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        findViewById(R.id.unregister).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().unregister(MainActivity.this);
+
+            }
+        });
     }
 
 

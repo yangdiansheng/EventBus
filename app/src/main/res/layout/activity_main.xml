@@ -25,5 +25,11 @@
         android:layout_height="50dp"
         android:text="子线程发送" />
 
+    <Button
+        android:id="@+id/unregister"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="unregister" />
+
 
 </LinearLayout>

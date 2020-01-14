@@ -13,6 +13,7 @@ public class EventBus {
     private static volatile EventBus defaultInstance;
     private static final EventBusBuilder DEFAULT_BUILDER = new EventBusBuilder();
     private final SubscriberMethodFinder subscriberMethodFinder;
+    //订阅方法参数和订阅方法对应关系
     private final Map<Class<?>, CopyOnWriteArrayList<Subscription>> subscriptionsByEventType;
     private final Map<Object, List<Class<?>>> typesBySubscriber;
     private final ThreadLocal<PostingThreadState> currentPostingThreadState = new ThreadLocal<PostingThreadState>() {
@@ -289,7 +290,32 @@ public class EventBus {
         boolean canceled;
     }
 
-    public void unregister(Object subscriber){
+    public synchronized void unregister(Object subscriber){
+        List<Class<?>> subscribedType = typesBySubscriber.get(subscriber);
+        if (subscribedType != null){
+            for(Class<?> eventType:subscribedType){
+                unsubscribeByEventType(subscriber,eventType);
+            }
+            typesBySubscriber.remove(subscriber);
+        } else {
+            //输出异常
+        }
+    }
 
+    /** Only updates subscriptionsByEventType, not typesBySubscriber! Caller must update typesBySubscriber. */
+    private void unsubscribeByEventType(Object subscriber, Class<?> eventType) {
+        List<Subscription> subscriptions = subscriptionsByEventType.get(eventType);
+        if (subscriptions != null) {
+            int size = subscriptions.size();
+            for (int i = 0; i < size; i++) {
+                Subscription subscription = subscriptions.get(i);
+                if (subscription.subscriber == subscriber) {
+                    subscription.active = false;
+                    subscriptions.remove(i);
+                    i--;
+                    size--;
+                }
+            }
+        }
     }
 }
