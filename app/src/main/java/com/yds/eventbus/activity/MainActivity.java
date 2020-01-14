@@ -67,4 +67,10 @@ public class MainActivity extends AppCompatActivity {
         Log.d("yyy","handleMessage2" + o);
         Log.d("yyy",Thread.currentThread().getName() + "");
     }
+
+    @Subscribe(getTreadMode = ThreadMode.BACKGROUND)
+    public void handleMessage3(String o){
+        Log.d("yyy","handleMessage3" + o);
+        Log.d("yyy",Thread.currentThread().getName() + "");
+    }
 }

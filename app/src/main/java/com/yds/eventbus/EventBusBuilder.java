@@ -4,10 +4,14 @@ import android.os.Looper;
 
 import com.yds.eventbus.android.AndroidLogger;
 
-public class EventBusBuilder {
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+public class EventBusBuilder {
+    private final static ExecutorService DEFAULT_EXECUTOR_SERVICE = Executors.newCachedThreadPool();
 
     MainThreadSupport mainThreadSupport;
+    ExecutorService executorService = DEFAULT_EXECUTOR_SERVICE;
 
 
     MainThreadSupport getMainThreadSupport() {

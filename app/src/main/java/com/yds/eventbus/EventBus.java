@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
 
 public class EventBus {
 
@@ -22,6 +23,8 @@ public class EventBus {
     };
     private MainThreadSupport mainThreadSupport;
     private final Poster mainThreadPoster;
+    private final BackgroundPoster backgroundPoster;
+    private final ExecutorService executorService;
 
     //双检测单例
     public EventBus(){
@@ -34,6 +37,12 @@ public class EventBus {
         typesBySubscriber = new HashMap<>();
         mainThreadSupport = builder.getMainThreadSupport();
         mainThreadPoster = mainThreadSupport != null ? mainThreadSupport.createPoster(this) : null;
+        backgroundPoster = new BackgroundPoster(this);
+        executorService = builder.executorService;
+    }
+
+    ExecutorService getExecutorService(){
+        return executorService;
     }
 
     public static EventBus getDefault(){
@@ -200,21 +209,23 @@ public class EventBus {
                     mainThreadPoster.enqueue(subscription, event);
                 }
                 break;
-//            case MAIN_ORDERED:
-//                if (mainThreadPoster != null) {
-//                    mainThreadPoster.enqueue(subscription, event);
-//                } else {
-//                    // temporary: technically not correct as poster not decoupled from subscriber
-//                    invokeSubscriber(subscription, event);
-//                }
-//                break;
-//            case BACKGROUND:
-//                if (isMainThread) {
-//                    backgroundPoster.enqueue(subscription, event);
-//                } else {
-//                    invokeSubscriber(subscription, event);
-//                }
-//                break;
+            case MAIN_ORDERED:
+                //直接发送到主线程处理队列中
+                if (mainThreadPoster != null) {
+                    mainThreadPoster.enqueue(subscription, event);
+                } else {
+                    // temporary: technically not correct as poster not decoupled from subscriber
+                    invokeSubscriber(subscription, event);
+                }
+                break;
+            case BACKGROUND:
+                //如果在主线程那么么发到后台线程处理，不在主线程直接调用
+                if (isMainThread) {
+                    backgroundPoster.enqueue(subscription, event);
+                } else {
+                    invokeSubscriber(subscription, event);
+                }
+                break;
 //            case ASYNC:
 //                asyncPoster.enqueue(subscription, event);
 //                break;
